@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Baking App</string>
+    <string name="random_image_design">Random image design</string>
+    <string name="ingredients">Ingredients</string>
+    <string name="steps">Steps</string>
+    <string name="serving" formatted="false">Serving %1$d</string>
+</resources>

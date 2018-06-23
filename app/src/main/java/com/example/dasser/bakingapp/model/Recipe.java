@@ -215,7 +215,7 @@ public class Recipe implements Parcelable {
             this.steps = steps;
         }
 
-        public List<Ingredient> getIngredients() {
+        public List<Ingredient> getUrls() {
             return ingredients;
         }
 
@@ -234,11 +234,11 @@ public class Recipe implements Parcelable {
             this.serving = serving;
         }
 
-        public List<String> getNames() {
+        public List<String> getDescriptions() {
             return name;
         }
 
-        public List<Integer> getServing() {
+        public List<Integer> getUrls() {
             return serving;
         }
     }*/

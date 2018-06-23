@@ -21,7 +21,8 @@ android {
 }
 
 dependencies {
-    def roomVersion = '1.1.0', archLifecycleVersion = '1.1.1', supportLibrariesVersion = '27.1.0'
+    def roomVersion = '1.1.0', archLifecycleVersion = '1.1.1', supportLibrariesVersion = '27.1.1',
+            exoPlayerVersion = '2.7.0'
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
@@ -33,11 +34,15 @@ dependencies {
     implementation "com.android.support:support-annotations:$supportLibrariesVersion"
     implementation 'com.android.support.constraint:constraint-layout:1.1.2'
 
+    // butterknife
     implementation 'com.jakewharton:butterknife:8.8.1'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
+
+    // retrofit
+    implementation 'com.squareup.retrofit2:retrofit:2.4.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.3.0'
 
-    implementation 'com.squareup.retrofit2:retrofit:2.4.0'
+    // timber
     implementation 'com.jakewharton.timber:timber:4.7.0'
 
     // Room components
@@ -55,11 +60,24 @@ dependencies {
     // Android Debug Database
     debugImplementation 'com.amitshekhar.android:debug-db:1.0.3'
 
-    testImplementation 'junit:junit:4.12'
+    // Exo-player
+    implementation "com.google.android.exoplayer:exoplayer-core:$exoPlayerVersion"
+    implementation "com.google.android.exoplayer:exoplayer-smoothstreaming:$exoPlayerVersion"
+    implementation "com.google.android.exoplayer:exoplayer-ui:$exoPlayerVersion"
+
+    // testing espresso
+    implementation 'com.android.support.test.espresso:espresso-idling-resource:3.0.2'
+    androidTestImplementation "com.android.support.test.espresso.idling:idling-concurrent:3.0.2"
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+    androidTestImplementation 'com.android.support.test:rules:1.0.2'
+    testImplementation 'junit:junit:4.12'
+
+    // kotlin
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 }
 repositories {
     mavenCentral()
 }
+
+apply plugin: 'kotlin-android-extensions'

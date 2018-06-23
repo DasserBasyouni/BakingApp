@@ -19,11 +19,11 @@ public class IngredientRecyclerViewAdapter extends RecyclerView.Adapter<Ingredie
     private List<String> mQuantity, mName;
 
     public IngredientRecyclerViewAdapter(List<Recipe.Ingredient> ingredient) {
+        mName = new ArrayList<>();
+        mQuantity = new ArrayList<>();
+
         for (int i = 0; i < ingredient.size(); i++) {
             Recipe.Ingredient ingredient1 = ingredient.get(i);
-
-            mName = new ArrayList<>();
-            mQuantity = new ArrayList<>();
 
             mName.add(ingredient1.getIngredient());
             mQuantity.add(ingredient1.getQuantity() + " " + ingredient1.getMeasure());
@@ -36,8 +36,8 @@ public class IngredientRecyclerViewAdapter extends RecyclerView.Adapter<Ingredie
 
         ViewHolder(View view) {
             super(view);
-            mIngredientTV = view.findViewById(R.id.textView_recipe_name);
-            mQuantityTV = view.findViewById(R.id.imageView_random_design);
+            mIngredientTV = view.findViewById(R.id.textView_name);
+            mQuantityTV = view.findViewById(R.id.textView_quantity);
         }
     }
 

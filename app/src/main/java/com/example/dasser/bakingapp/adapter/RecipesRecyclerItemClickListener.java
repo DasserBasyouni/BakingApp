@@ -15,7 +15,7 @@ public class RecipesRecyclerItemClickListener implements RecyclerView.OnItemTouc
 
     private GestureDetector mGestureDetector;
 
-    public RecipesRecyclerItemClickListener(Context context, final RecyclerView recyclerView, OnItemClickListener listener) {
+    public RecipesRecyclerItemClickListener(Context context, OnItemClickListener listener) {
         mListener = listener;
         mGestureDetector = new GestureDetector(context, new GestureDetector.SimpleOnGestureListener() {
             @Override

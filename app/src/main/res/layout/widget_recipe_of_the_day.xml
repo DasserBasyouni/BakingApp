@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/frameLayout_widget"
+    style="@style/AppCardViewStyle"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:clickable="true"
+    android:focusable="true"
+    android:orientation="horizontal">
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:adjustViewBounds="true"
+        android:contentDescription="@string/random_image_design"
+        android:scaleType="fitCenter"
+        android:src="@drawable/background_1" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <TextView
+            style="@style/TextAppearance.AppCompat.Large"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dp16"
+            android:layout_marginStart="@dimen/dp16"
+            android:layout_marginTop="@dimen/dp16"
+            android:text="@string/recipe_of_the_day"
+            android:textColor="@android:color/background_light" />
+
+        <TextView
+            android:id="@+id/textView_widget_recipe_name"
+            style="@style/TextAppearance.AppCompat.Medium"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dp16"
+            android:layout_marginStart="@dimen/dp16"
+            android:layout_marginTop="@dimen/dp12"
+            android:textColor="@android:color/background_light"
+            app:layout_constraintLeft_toLeftOf="@id/imageView_random_design"
+            app:layout_constraintTop_toBottomOf="@+id/textView_recipe_name2"
+            tools:text="Nutella Pie" />
+
+        <TextView
+            android:id="@+id/textView_widget_recipe_ingredients"
+            style="@style/TextAppearance.AppCompat.Small"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dp16"
+            android:layout_marginStart="@dimen/dp16"
+            android:layout_marginTop="8dp"
+            android:maxLines="4"
+            android:textColor="@android:color/background_light"
+            app:layout_constraintLeft_toLeftOf="@id/imageView_random_design"
+            app:layout_constraintTop_toBottomOf="@+id/textView_recipe_name"
+            tools:text="Graham Cracker crumbs\nunsalted butter, melted\ngranulated sugar...." />
+    </LinearLayout>
+</FrameLayout>

@@ -1,10 +1,10 @@
 package com.example.dasser.bakingapp.adapter;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,8 +13,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.dasser.bakingapp.R;
+import com.example.dasser.bakingapp.model.Combinations;
 import com.example.dasser.bakingapp.model.Recipe;
-import com.example.dasser.bakingapp.ui.StepsFragment;
+import com.example.dasser.bakingapp.ui.StepsActivity;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
@@ -23,8 +24,8 @@ import java.util.List;
 
 import timber.log.Timber;
 
-import static com.example.dasser.bakingapp.Constants.BUNDLE_STEP_DESCRIPTION;
-import static com.example.dasser.bakingapp.Constants.BUNDLE_STEP_VIDEO_URL;
+import static com.example.dasser.bakingapp.Constants.BUNDLE_STEPS_COMBINATION;
+import static com.example.dasser.bakingapp.Constants.BUNDLE_STEPS_NUMBER;
 
 
 public class StepsRecyclerViewAdapter extends RecyclerView.Adapter<StepsRecyclerViewAdapter.ViewHolder> {
@@ -32,18 +33,18 @@ public class StepsRecyclerViewAdapter extends RecyclerView.Adapter<StepsRecycler
     private List<String> mShortDescription, mDescription, mVideoUrl, mThumbnailUrl;
 
     public StepsRecyclerViewAdapter(List<Recipe.Steps> steps) {
+        mShortDescription = new ArrayList<>();
+        mDescription = new ArrayList<>();
+        mVideoUrl = new ArrayList<>();
+        mThumbnailUrl = new ArrayList<>();
+
         for (int i = 0; i < steps.size(); i++) {
             Recipe.Steps step = steps.get(i);
 
-            mShortDescription = new ArrayList<>();
-            mDescription = new ArrayList<>();
-            mVideoUrl = new ArrayList<>();
-            mThumbnailUrl = new ArrayList<>();
-
             mShortDescription.add(step.getShortdescription());
-            mDescription.add(step.getShortdescription());
-            mVideoUrl.add(step.getShortdescription());
-            mThumbnailUrl.add(step.getShortdescription());
+            mDescription.add(step.getDescription());
+            mVideoUrl.add(step.getVideourl());
+            mThumbnailUrl.add(step.getThumbnailurl());
         }
     }
 
@@ -55,9 +56,8 @@ public class StepsRecyclerViewAdapter extends RecyclerView.Adapter<StepsRecycler
         ViewHolder(View view) {
             super(view);
             this.view = view;
-            shortDescriptionTV = view.findViewById(R.id.textView_recipe_name);
-            thumbnailIV = view.findViewById(R.id.imageView_random_design);
-
+            shortDescriptionTV = view.findViewById(R.id.textView_short_description);
+            thumbnailIV = view.findViewById(R.id.imageView_thumbnail);
         }
     }
 
@@ -65,7 +65,7 @@ public class StepsRecyclerViewAdapter extends RecyclerView.Adapter<StepsRecycler
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.item_ingredients, parent, false);
+                .inflate(R.layout.item_step, parent, false);
         return new ViewHolder(view);
     }
 
@@ -77,30 +77,24 @@ public class StepsRecyclerViewAdapter extends RecyclerView.Adapter<StepsRecycler
 
             @Override
             public void onClick(View v) {
+                Context context = v.getContext();
 
-                Fragment fragment = new StepsFragment();
-                fragment.setArguments(getBundle());
-
-                FragmentActivity activity = (FragmentActivity) holder.view.getContext();
-                activity.getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.fragment_container, fragment).commit();
+                Intent intent = new Intent(context, StepsActivity.class);
+                intent.putExtras(getBundle());
+                context.startActivity(intent);
             }
 
             Bundle getBundle() {
                 Bundle bundle = new Bundle();
 
-                String videoUrl = mVideoUrl.get(position);
-                String description = mDescription.get(position);
-
-                if (!videoUrl.isEmpty())
-                    bundle.putString(BUNDLE_STEP_VIDEO_URL, mVideoUrl.get(position));
-                if (!description.isEmpty())
-                    bundle.putString(BUNDLE_STEP_DESCRIPTION, mDescription.get(position));
+                bundle.putParcelable(BUNDLE_STEPS_COMBINATION,
+                        new Combinations.RecipeDescriptionsAndUrlsCombination(mDescription,
+                                mVideoUrl));
+                bundle.putInt(BUNDLE_STEPS_NUMBER, position);
 
                 return bundle;
             }
         });
-
 
 
         String thumbnailUrl = mThumbnailUrl.get(position);
@@ -108,9 +102,7 @@ public class StepsRecyclerViewAdapter extends RecyclerView.Adapter<StepsRecycler
             holder.thumbnailIV.setVisibility(View.VISIBLE);
             Picasso.get().load(thumbnailUrl).into(holder.thumbnailIV, new Callback() {
                 @Override
-                public void onSuccess() {
-
-                }
+                public void onSuccess() {}
 
                 @Override
                 public void onError(Exception e) {
@@ -118,7 +110,8 @@ public class StepsRecyclerViewAdapter extends RecyclerView.Adapter<StepsRecycler
                     holder.thumbnailIV.setVisibility(View.GONE);
                 }
             });
-        }
+        }else
+            holder.thumbnailIV.setVisibility(View.GONE);
 
 
     }

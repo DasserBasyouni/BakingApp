@@ -4,4 +4,17 @@
     <string name="ingredients">Ingredients</string>
     <string name="steps">Steps</string>
     <string name="serving" formatted="false">Serving %1$d</string>
+    <string name="description">Description</string>
+    <string name="next_recipe">Next Recipe</string>
+    <string name="previous">Previous</string>
+    <string name="appwidget_text">EXAMPLE</string>
+    <string name="add_widget">Add widget</string>
+    <string name="recipe_of_the_day">Recipe Of the Day</string>
+    <string name="pref_recipe_of_the_day_id">recipe_of_the_day_id</string>
+    <string name="dots">....</string>
+    <string name="msg_no_description">No description available</string>
+    <string name="msg_no_video_available">No Video Available</string>
+    <string name="recipe_details">Recipe Details</string>
+    <string name="recipe_step_number" formatted="false">Recipe Step %1$d</string>
+
 </resources>

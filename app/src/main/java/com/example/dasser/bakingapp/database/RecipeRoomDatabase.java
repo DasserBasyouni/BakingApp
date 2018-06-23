@@ -25,6 +25,7 @@ public abstract class RecipeRoomDatabase extends RoomDatabase{
                 if (INSTANCE == null) {
                     INSTANCE = Room.databaseBuilder(context,
                             RecipeRoomDatabase.class, DATABASE_NAME)
+                            .allowMainThreadQueries()
                             .build();
                 }
             }

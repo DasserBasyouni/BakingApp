@@ -14,17 +14,14 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.example.dasser.bakingapp.R;
 import com.example.dasser.bakingapp.adapter.IngredientRecyclerViewAdapter;
-import com.example.dasser.bakingapp.adapter.RecipeIngredientsAndStepsCombination;
 import com.example.dasser.bakingapp.adapter.StepsRecyclerViewAdapter;
 import com.example.dasser.bakingapp.database.AppDatabaseUtils;
-import com.example.dasser.bakingapp.database.RecipeRoomDatabase;
-import com.example.dasser.bakingapp.model.Recipe;
-
-import java.util.ArrayList;
-import java.util.List;
+import com.example.dasser.bakingapp.model.Combinations;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -34,10 +31,14 @@ import static com.example.dasser.bakingapp.Constants.LOADER_ID_DETAIL_ACTIVITY;
 
 public class DetailFragment extends Fragment implements LoaderManager.LoaderCallbacks{
 
-    @BindView(R.id.recyclerView_ingredients) RecyclerView ingredientsRV;
-    @BindView(R.id.recyclerView_steps) RecyclerView stepsRV;
+    @BindView(R.id.recyclerView_ingredients) RecyclerView mIngredients_RV;
+    @BindView(R.id.recyclerView_steps) RecyclerView mSteps_RV;
+    @BindView(R.id.textView_ingredients) TextView mIngredients_TV;
+    @BindView(R.id.textView_steps) TextView mSteps_TV;
+    @BindView(R.id.progressBar_detail_fragment) ProgressBar mProgressBar;
 
     private boolean mTwoPane;
+
 
     @Override
     public void setArguments(@Nullable Bundle args) {
@@ -58,8 +59,8 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
     }
 
     private void setupRecyclerViews(Object data) {
-        RecipeIngredientsAndStepsCombination recipeIngredientsAndStepsCombination =
-                (RecipeIngredientsAndStepsCombination) data;
+        Combinations.RecipeIngredientsAndStepsCombination recipeIngredientsAndStepsCombination =
+                (Combinations.RecipeIngredientsAndStepsCombination) data;
         initialiseTwoPaneBoolean();
 
         int ingredientsNumberOfColumns;
@@ -68,17 +69,16 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
         else
             ingredientsNumberOfColumns = 3;
 
-        String  testCase1 = ((RecipeIngredientsAndStepsCombination) data).getIngredients().get(1).getMeasure();
-        String testCase2 = ((RecipeIngredientsAndStepsCombination) data).getSteps().get(1).getDescription();
-
-
-        ingredientsRV.setLayoutManager(new GridLayoutManager(getContext(), ingredientsNumberOfColumns));
-        ingredientsRV.setAdapter(new IngredientRecyclerViewAdapter(
+        mIngredients_RV.setLayoutManager(new GridLayoutManager(getContext(), ingredientsNumberOfColumns,
+                GridLayoutManager.HORIZONTAL, false));
+        mIngredients_RV.setAdapter(new IngredientRecyclerViewAdapter(
                 recipeIngredientsAndStepsCombination.getIngredients()));
+        mIngredients_RV.setHasFixedSize(true);
 
-        stepsRV.setLayoutManager(new LinearLayoutManager(getActivity()));
-        stepsRV.setAdapter(new StepsRecyclerViewAdapter(
+        mSteps_RV.setLayoutManager(new LinearLayoutManager(getActivity()));
+        mSteps_RV.setAdapter(new StepsRecyclerViewAdapter(
                 recipeIngredientsAndStepsCombination.getSteps()));
+        mSteps_RV.setHasFixedSize(true);
     }
 
     private void initialiseTwoPaneBoolean() {
@@ -99,15 +99,20 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
 
     @Override
     public void onLoadFinished(@NonNull Loader loader, Object data) {
-        String  testCase3 = ((RecipeIngredientsAndStepsCombination) data).getIngredients().get(1).getMeasure();
         setupRecyclerViews(data);
+        mIngredients_TV.setVisibility(View.VISIBLE);
+        mIngredients_RV.setVisibility(View.VISIBLE);
+        mSteps_TV.setVisibility(View.VISIBLE);
+        mSteps_RV.setVisibility(View.VISIBLE);
+        mSteps_RV.setVisibility(View.VISIBLE);
+        mProgressBar.setVisibility(View.GONE);
     }
 
     @Override
     public void onLoaderReset(@NonNull Loader loader) { }
 
 
-    public static class GetRecipesDetails extends AsyncTaskLoader<RecipeIngredientsAndStepsCombination> {
+    public static class GetRecipesDetails extends AsyncTaskLoader<Combinations.RecipeIngredientsAndStepsCombination> {
 
         Bundle bundle;
 
@@ -124,29 +129,17 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
 
         @Nullable
         @Override
-        public RecipeIngredientsAndStepsCombination loadInBackground() {
+        public Combinations.RecipeIngredientsAndStepsCombination loadInBackground() {
             int id;
             if (bundle != null)
                 id = bundle.getInt(BUNDLE_RECIPE_CLICKED_POSITION);
             else
                 throw new NullPointerException("Bundle is null");
 
-            List<Integer> ids = new ArrayList<>();
-            ids.add(id);
-
-            RecipeIngredientsAndStepsCombination recipeIngredientsAndStepsCombination
-                    = new RecipeIngredientsAndStepsCombination(
-                    AppDatabaseUtils.getRecipeIngredients(getContext(), ids),
-                    AppDatabaseUtils.getRecipeSteps(getContext(), id));
-
-            List<Recipe.Ingredient> testCase4 = AppDatabaseUtils.getRecipeIngredients(getContext(), ids);
-
-            int testCase5 = RecipeRoomDatabase.getDatabase(getContext())
-                    .recipeDao().getTest("Brownies");
-
-            String testCase6 = recipeIngredientsAndStepsCombination.getIngredients().get(1).getMeasure();
-
-            return recipeIngredientsAndStepsCombination;
+            // TODO (3) getRecipesIngredients_MethodOne() is returning null, what is wrong with it?
+            return new Combinations.RecipeIngredientsAndStepsCombination(
+            AppDatabaseUtils.getRecipesIngredients_MethodTwo(getContext(), id),
+            AppDatabaseUtils.getRecipeSteps_MethodTwo(getContext(), id));
         }
     }
 }

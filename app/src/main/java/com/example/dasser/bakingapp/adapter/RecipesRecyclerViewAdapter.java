@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.dasser.bakingapp.R;
+import com.example.dasser.bakingapp.model.Combinations;
 import com.example.dasser.bakingapp.model.Recipe;
 
 import java.util.ArrayList;
@@ -27,7 +28,7 @@ public class RecipesRecyclerViewAdapter extends RecyclerView.Adapter<RecipesRecy
     private final List<Integer> mImagesRes;
     private final Context context;
 
-    public RecipesRecyclerViewAdapter(Context context, RecipeNameAndServingCombination recipeNameAndServingCombination) {
+    public RecipesRecyclerViewAdapter(Context context, Combinations.RecipeNameAndServingCombination recipeNameAndServingCombination) {
         mRecipes = recipeNameAndServingCombination.getNames();
         mRecipesServings = recipeNameAndServingCombination.getServing();
         this.context = context;

@@ -24,11 +24,13 @@
         </activity>
 
         <activity android:name=".ui.DetailActivity"
+            android:launchMode="singleTop"
             android:label="@string/recipe_details"
             android:parentActivityName=".ui.MainActivity"
             tools:targetApi="jelly_bean" />
 
         <activity android:name=".ui.StepsActivity"
+            android:launchMode="singleTop"
             android:parentActivityName=".ui.DetailActivity"
             tools:targetApi="jelly_bean" />
 

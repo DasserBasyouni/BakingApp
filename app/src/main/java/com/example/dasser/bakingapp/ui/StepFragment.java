@@ -9,13 +9,11 @@ import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.FrameLayout;
 import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -46,7 +44,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import timber.log.Timber;
 
-import static com.example.dasser.bakingapp.Constants.BUNDLE_STATE_PLAYER_FULLSCREEN;
 import static com.example.dasser.bakingapp.Constants.BUNDLE_STATE_RESUME_POSITION;
 import static com.example.dasser.bakingapp.Constants.BUNDLE_STATE_RESUME_WINDOW;
 import static com.example.dasser.bakingapp.Constants.BUNDLE_STEPS_COMBINATION;
@@ -63,7 +60,7 @@ public class StepFragment extends Fragment {
     @BindView(R.id.progressBar_step_fragment) ProgressBar mProgressBar;
     @BindView(R.id.textView_no_video) TextView mNoVideo_TV;
 
-    private int mStepNumber = 0;
+    private int mStepNumber;
     private SimpleExoPlayer player;
     private DefaultDataSourceFactory dataSourceFactory;
     private ExtractorMediaSource.EventListener eventListener;
@@ -84,25 +81,32 @@ public class StepFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_step, container, false);
         ButterKnife.bind(this, view);
 
-        if (savedInstanceState != null) {
-            mResumeWindow = savedInstanceState.getInt(BUNDLE_STATE_RESUME_WINDOW);
-            mResumePosition = savedInstanceState.getLong(BUNDLE_STATE_RESUME_POSITION);
-            mExoPlayerFullscreen = savedInstanceState.getBoolean(BUNDLE_STATE_PLAYER_FULLSCREEN);
-        }
+        mExoPlayerFullscreen = getResources().getConfiguration().orientation
+                == Configuration.ORIENTATION_LANDSCAPE;
 
+        Combinations.RecipeDescriptionsAndUrlsCombination combination = null;
         Bundle bundle = getArguments();
         if (bundle != null) {
             mStepNumber = bundle.getInt(BUNDLE_STEPS_NUMBER);
-            Combinations.RecipeDescriptionsAndUrlsCombination combination =
-                    bundle.getParcelable(BUNDLE_STEPS_COMBINATION);
+            combination = bundle.getParcelable(BUNDLE_STEPS_COMBINATION);
+        }
 
-            Activity activity = getActivity();
-            if (activity != null)
-                activity.setTitle(getString(R.string.recipe_step_number, mStepNumber + 1));
+        if (savedInstanceState != null) {
+            mResumeWindow = savedInstanceState.getInt(BUNDLE_STATE_RESUME_WINDOW);
+            mResumePosition = savedInstanceState.getLong(BUNDLE_STATE_RESUME_POSITION);
 
-            if (combination != null) {
-                initialiseViews(combination);
+            boolean containsSavedId = savedInstanceState.containsKey(BUNDLE_STEPS_NUMBER);
+            if (containsSavedId) {
+                mStepNumber = savedInstanceState.getInt(BUNDLE_STEPS_NUMBER);
             }
+        }
+
+        Activity activity = getActivity();
+        if (activity != null)
+            activity.setTitle(getString(R.string.recipe_step_number, mStepNumber + 1));
+
+        if (combination != null) {
+            initialiseViews(combination);
         }
 
         checkIfButtonsNeedDisable();
@@ -177,13 +181,14 @@ public class StepFragment extends Fragment {
             @Override
             public void onPlayerStateChanged(boolean playWhenReady, int playbackState) {
                 setDescriptionText();
-                Log.e("Z_", "staaaat " + playbackState);
                 if (playbackState != Player.STATE_IDLE) {
-                    restorePlayerHeight();
+                    if (!mExoPlayerFullscreen)
+                        restorePlayerHeight();
                     displayVideoAndDescriptionViewsAndHideLoading();
                 } else {
                     recipeVideo_PV.setVisibility(View.INVISIBLE);
-                    minimizePlayerHeight();
+                    if (!mExoPlayerFullscreen)
+                        minimizePlayerHeight();
                 }
             }
         });
@@ -220,8 +225,6 @@ public class StepFragment extends Fragment {
 
     private synchronized MediaSource getMediaSourceAndInitialiseViews() {
         String url = urls.get(mStepNumber);
-
-        Log.e("Z_", "url-------" + url);
         if (url.isEmpty()) {
             minimizePlayerHeight();
             setDescriptionText();
@@ -247,7 +250,7 @@ public class StepFragment extends Fragment {
     public void onSaveInstanceState(@NonNull Bundle outState) {
         outState.putInt(BUNDLE_STATE_RESUME_WINDOW, mResumeWindow);
         outState.putLong(BUNDLE_STATE_RESUME_POSITION, mResumePosition);
-        outState.putBoolean(BUNDLE_STATE_PLAYER_FULLSCREEN, mExoPlayerFullscreen);
+        outState.putInt(BUNDLE_STEPS_NUMBER, mStepNumber);
         super.onSaveInstanceState(outState);
     }
 
@@ -272,7 +275,7 @@ public class StepFragment extends Fragment {
 
         if (!urls.get(mStepNumber).isEmpty()) {
             int uiOptions;
-            if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            if (mExoPlayerFullscreen) {
                 uiOptions = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION;
                 ((ViewGroup) recipeVideo_PV.getParent()).removeView(recipeVideo_PV);
                 mFullScreenDialog.addContentView(recipeVideo_PV, new ViewGroup.LayoutParams(
@@ -281,8 +284,7 @@ public class StepFragment extends Fragment {
             } else {
                 uiOptions = View.SYSTEM_UI_FLAG_VISIBLE;
                 ((ViewGroup) recipeVideo_PV.getParent()).removeView(recipeVideo_PV);
-                ((FrameLayout) getActivity().findViewById(R.id.constraint_step)).addView(recipeVideo_PV);
-                mExoPlayerFullscreen = false;
+                ((ConstraintLayout) getActivity().findViewById(R.id.constraint_step)).addView(recipeVideo_PV);
                 mFullScreenDialog.dismiss();
             }
             getActivity().getWindow().getDecorView().setSystemUiVisibility(uiOptions);
@@ -310,19 +312,14 @@ public class StepFragment extends Fragment {
     }
 
     private void minimizePlayerHeight() {
-        int height = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 200,
+        int height = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 100,
                 getResources().getDisplayMetrics());
         recipeVideo_PV.setLayoutParams(new ConstraintLayout.LayoutParams(
                 ConstraintLayout.LayoutParams.MATCH_PARENT, height));
     }
 
     private void restorePlayerHeight() {
-        int height;
-
-        if (true) height = ConstraintLayout.LayoutParams.WRAP_CONTENT;
-        else height = ConstraintLayout.LayoutParams.MATCH_PARENT;
-
         recipeVideo_PV.setLayoutParams(new ConstraintLayout.LayoutParams(
-                ConstraintLayout.LayoutParams.MATCH_PARENT, height));
+                ConstraintLayout.LayoutParams.MATCH_PARENT, ConstraintLayout.LayoutParams.WRAP_CONTENT));
     }
 }

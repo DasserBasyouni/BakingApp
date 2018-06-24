@@ -39,6 +39,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     private boolean mTwoPane;
 
 
+    // TODO (4): when the phone rotates the progressBar visibility goes to Visible again, how to disable that?
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,7 +51,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             initialiseRetrofitConnection();
             initialiseTwoPaneBoolean();
         }
-
     }
 
     private void initialiseTwoPaneBoolean() {

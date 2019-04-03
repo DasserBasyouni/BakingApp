@@ -1,15 +1,13 @@
 apply plugin: 'com.android.application'
-apply plugin: 'kotlin-android'
 
 android {
-    compileSdkVersion 27
+    compileSdkVersion 28
     defaultConfig {
         applicationId "com.example.dasser.bakingapp"
         minSdkVersion 15
-        targetSdkVersion 27
         versionCode 1
         versionName "1.0"
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
         release {
@@ -18,66 +16,52 @@ android {
         }
     }
 
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
 }
 
 dependencies {
-    def roomVersion = '1.1.0', archLifecycleVersion = '1.1.1', supportLibrariesVersion = '27.1.1',
-            exoPlayerVersion = '2.7.0'
-
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
-
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
     // Support Libraries
-    implementation "com.android.support:cardview-v7:$supportLibrariesVersion"
-    implementation "com.android.support:appcompat-v7:$supportLibrariesVersion"
-    implementation "com.android.support:support-v4:$supportLibrariesVersion"
-    implementation "com.android.support:recyclerview-v7:$supportLibrariesVersion"
-    implementation "com.android.support:support-annotations:$supportLibrariesVersion"
-    implementation 'com.android.support.constraint:constraint-layout:1.1.2'
-
-    // butterknife
-    implementation 'com.jakewharton:butterknife:8.8.1'
-    annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
-
+    implementation 'androidx.cardview:cardview:1.0.0'
+    implementation 'androidx.appcompat:appcompat:1.0.2'
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+    implementation 'androidx.recyclerview:recyclerview:1.0.0'
+    implementation 'androidx.annotation:annotation:1.0.2'
+    implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
+    // butterKnife
+    implementation 'com.jakewharton:butterknife:10.1.0'
+    annotationProcessor 'com.jakewharton:butterknife-compiler:10.1.0'
     // retrofit
     implementation 'com.squareup.retrofit2:retrofit:2.4.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.3.0'
-
     // timber
     implementation 'com.jakewharton.timber:timber:4.7.0'
-
     // Room components
-    implementation "android.arch.persistence.room:runtime:$roomVersion"
-    annotationProcessor "android.arch.persistence.room:compiler:$roomVersion"
-    androidTestImplementation "android.arch.persistence.room:testing:$roomVersion"
-
+    implementation 'androidx.room:room-runtime:2.0.0'
+    annotationProcessor 'androidx.room:room-compiler:2.0.0'
+    androidTestImplementation 'androidx.room:room-testing:2.0.0'
     // Lifecycle components
-    implementation "android.arch.lifecycle:extensions:$archLifecycleVersion"
-    annotationProcessor "android.arch.lifecycle:compiler:$archLifecycleVersion"
-
+    implementation 'androidx.lifecycle:lifecycle-extensions:2.0.0'
+    annotationProcessor 'androidx.lifecycle:lifecycle-compiler:2.0.0'
     // Picasso
     implementation 'com.squareup.picasso:picasso:2.71828'
-
     // Android Debug Database
     debugImplementation 'com.amitshekhar.android:debug-db:1.0.3'
-
     // Exo-player
-    implementation "com.google.android.exoplayer:exoplayer-core:$exoPlayerVersion"
-    implementation "com.google.android.exoplayer:exoplayer-smoothstreaming:$exoPlayerVersion"
-    implementation "com.google.android.exoplayer:exoplayer-ui:$exoPlayerVersion"
-
+    implementation 'com.google.android.exoplayer:exoplayer-core:2.7.0'
+    implementation 'com.google.android.exoplayer:exoplayer-smoothstreaming:2.7.0'
+    implementation 'com.google.android.exoplayer:exoplayer-ui:2.7.0'
     // testing espresso
-    implementation 'com.android.support.test.espresso:espresso-idling-resource:3.0.2'
-    androidTestImplementation "com.android.support.test.espresso.idling:idling-concurrent:3.0.2"
-    androidTestImplementation 'com.android.support.test:runner:1.0.2'
-    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
-    androidTestImplementation 'com.android.support.test:rules:1.0.2'
+    implementation 'androidx.test.espresso:espresso-idling-resource:3.1.1'
+    androidTestImplementation 'androidx.test.espresso.idling:idling-concurrent:3.1.1'
+    androidTestImplementation 'androidx.test:runner:1.1.1'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.1'
+    androidTestImplementation 'androidx.test:rules:1.1.1'
     testImplementation 'junit:junit:4.12'
-
-    // kotlin
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 }
 repositories {
     mavenCentral()
 }
-
-apply plugin: 'kotlin-android-extensions'

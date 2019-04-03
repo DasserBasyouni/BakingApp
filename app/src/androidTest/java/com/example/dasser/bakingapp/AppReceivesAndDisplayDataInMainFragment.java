@@ -1,13 +1,13 @@
 package com.example.dasser.bakingapp;
 
-import android.support.test.espresso.IdlingPolicies;
-import android.support.test.espresso.IdlingRegistry;
-import android.support.test.espresso.IdlingResource;
-import android.support.test.espresso.NoMatchingViewException;
-import android.support.test.espresso.ViewAssertion;
-import android.support.test.rule.ActivityTestRule;
-import android.support.test.runner.AndroidJUnit4;
-import android.support.v7.widget.RecyclerView;
+import androidx.test.espresso.IdlingPolicies;
+import androidx.test.espresso.IdlingRegistry;
+import androidx.test.espresso.IdlingResource;
+import androidx.test.espresso.NoMatchingViewException;
+import androidx.test.espresso.ViewAssertion;
+import androidx.test.rule.ActivityTestRule;
+import androidx.test.runner.AndroidJUnit4;
+import androidx.recyclerview.widget.RecyclerView;
 import android.text.format.DateUtils;
 import android.view.View;
 
@@ -20,8 +20,8 @@ import org.junit.runner.RunWith;
 
 import java.util.concurrent.TimeUnit;
 
-import static android.support.test.espresso.Espresso.onView;
-import static android.support.test.espresso.matcher.ViewMatchers.withId;
+import static androidx.test.espresso.Espresso.onView;
+import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 

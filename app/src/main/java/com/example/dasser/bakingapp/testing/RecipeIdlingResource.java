@@ -1,6 +1,6 @@
 package com.example.dasser.bakingapp.testing;
 
-import android.support.test.espresso.IdlingResource;
+import androidx.test.espresso.IdlingResource;
 
 public class RecipeIdlingResource implements IdlingResource {
 

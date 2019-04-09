@@ -35,7 +35,7 @@ public class AppReceivesAndDisplayDataInMainFragment {
 
 
     @Test
-    public void receivingAndDisplayingTest_MainFragment() {
+    public void receivingAndDisplayingTestMainFragment() {
         waitForApp(DateUtils.SECOND_IN_MILLIS * 5);
     }
 

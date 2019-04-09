@@ -267,24 +267,23 @@ public class OneStepDetailFragment extends Fragment {
 
         initFullscreenDialog();
 
-        if (combination != null)
-            if (!urls.get(mStepNumber).isEmpty()) {
-                int uiOptions;
-                if (mPhoneSceneIsInLandscape) {
-                    uiOptions = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION;
-                    ((ViewGroup) recipeVideo_PV.getParent()).removeView(recipeVideo_PV);
-                    mFullScreenDialog.addContentView(recipeVideo_PV, new ViewGroup.LayoutParams(
-                            ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-                    mFullScreenDialog.show();
-                } else {
-                    uiOptions = View.SYSTEM_UI_FLAG_VISIBLE;
-                    ((ViewGroup) recipeVideo_PV.getParent()).removeView(recipeVideo_PV);
-                    ((ConstraintLayout) Objects.requireNonNull(getActivity())
-                            .findViewById(R.id.constraint_step)).addView(recipeVideo_PV);
-                    mFullScreenDialog.dismiss();
-                }
-                Objects.requireNonNull(getActivity()).getWindow().getDecorView().setSystemUiVisibility(uiOptions);
+        if (combination != null && !urls.get(mStepNumber).isEmpty()) {
+            int uiOptions;
+            if (mPhoneSceneIsInLandscape) {
+                uiOptions = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION;
+                ((ViewGroup) recipeVideo_PV.getParent()).removeView(recipeVideo_PV);
+                mFullScreenDialog.addContentView(recipeVideo_PV, new ViewGroup.LayoutParams(
+                        ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+                mFullScreenDialog.show();
+            } else {
+                uiOptions = View.SYSTEM_UI_FLAG_VISIBLE;
+                ((ViewGroup) recipeVideo_PV.getParent()).removeView(recipeVideo_PV);
+                ((ConstraintLayout) Objects.requireNonNull(getActivity())
+                        .findViewById(R.id.constraint_step)).addView(recipeVideo_PV);
+                mFullScreenDialog.dismiss();
             }
+            Objects.requireNonNull(getActivity()).getWindow().getDecorView().setSystemUiVisibility(uiOptions);
+        }
     }
 
     @Override

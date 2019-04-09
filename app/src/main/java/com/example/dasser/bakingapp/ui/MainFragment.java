@@ -66,7 +66,7 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
         if (getContext() != null)
             return new GetRecipesNames(getContext());
         else
-            throw new NullPointerException("onCreateLoader null context");
+            throw new IllegalArgumentException("onCreateLoader null context");
     }
 
     @Override
@@ -83,7 +83,7 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
                         startActivity(intent);
 
                     } else
-                        throw new NullPointerException("beginTransaction() returns null");
+                        throw new IllegalArgumentException("beginTransaction() returns null");
                 }));
         progressBar.setVisibility(View.GONE);
         recyclerView.setVisibility(View.VISIBLE);
@@ -91,7 +91,7 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
     }
 
     @Override
-    public void onLoaderReset(@NonNull Loader loader) { }
+    public void onLoaderReset(@NonNull Loader loader) { /* do nothing */ }
 
 
     public static class GetRecipesNames extends AsyncTaskLoader<Combinations.RecipeNameAndServingCombination> {

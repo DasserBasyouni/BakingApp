@@ -37,7 +37,7 @@ public class RecipesRecyclerItemClickListener implements RecyclerView.OnItemTouc
         return false;
     }
 
-    @Override public void onTouchEvent(@NonNull RecyclerView view, @NonNull MotionEvent motionEvent) { }
+    @Override public void onTouchEvent(@NonNull RecyclerView view, @NonNull MotionEvent motionEvent) { /* do nothing */ }
 
     @Override
     public void onRequestDisallowInterceptTouchEvent (boolean disallowIntercept){ /* do nothing */ }

@@ -31,8 +31,8 @@ public class IngredientRecyclerViewAdapter extends RecyclerView.Adapter<Ingredie
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
-        final TextView mIngredientTV;
-        final TextView mQuantityTV;
+        private final TextView mIngredientTV;
+        private final TextView mQuantityTV;
 
         ViewHolder(View view) {
             super(view);

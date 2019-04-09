@@ -45,8 +45,8 @@ public class RecipesRecyclerViewAdapter extends RecyclerView.Adapter<RecipesRecy
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
-        final TextView mRecipeName, mRecipeServing;
-        final ImageView mRandomDesign;
+        private final TextView mRecipeName, mRecipeServing;
+        private final ImageView mRandomDesign;
 
         ViewHolder(View view) {
             super(view);

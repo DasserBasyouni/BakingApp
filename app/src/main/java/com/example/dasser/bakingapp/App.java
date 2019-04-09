@@ -19,7 +19,7 @@ public class App extends Application {
     private class NotLoggingTree extends Timber.Tree {
         @Override
         protected void log(int priority, String tag, @NonNull String message, Throwable t) {
-
+            // Do nothing
         }
     }
 }

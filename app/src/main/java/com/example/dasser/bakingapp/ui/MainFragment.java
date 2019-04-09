@@ -35,7 +35,6 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
     @BindView(R.id.progressBar_main_fragment) ProgressBar progressBar;
     @BindView(R.id.recyclerView_recipes) RecyclerView recyclerView;
 
-    public MainFragment() { }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,

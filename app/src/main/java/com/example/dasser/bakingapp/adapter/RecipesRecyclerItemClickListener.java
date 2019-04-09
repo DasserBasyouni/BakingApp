@@ -1,19 +1,21 @@
 package com.example.dasser.bakingapp.adapter;
 
 import android.content.Context;
+
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 
 public class RecipesRecyclerItemClickListener implements RecyclerView.OnItemTouchListener {
+
     private OnItemClickListener mListener;
+    private GestureDetector mGestureDetector;
 
     public interface OnItemClickListener {
         void onItemClick(int position);
     }
-
-    private GestureDetector mGestureDetector;
 
     public RecipesRecyclerItemClickListener(Context context, OnItemClickListener listener) {
         mListener = listener;
@@ -25,7 +27,8 @@ public class RecipesRecyclerItemClickListener implements RecyclerView.OnItemTouc
         });
     }
 
-    @Override public boolean onInterceptTouchEvent(RecyclerView view, MotionEvent e) {
+    @Override
+    public boolean onInterceptTouchEvent(@NonNull RecyclerView view, @NonNull MotionEvent e) {
         View childView = view.findChildViewUnder(e.getX(), e.getY());
         if (childView != null && mListener != null && mGestureDetector.onTouchEvent(e)) {
             mListener.onItemClick(view.getChildAdapterPosition(childView));
@@ -34,8 +37,8 @@ public class RecipesRecyclerItemClickListener implements RecyclerView.OnItemTouc
         return false;
     }
 
-    @Override public void onTouchEvent(RecyclerView view, MotionEvent motionEvent) { }
+    @Override public void onTouchEvent(@NonNull RecyclerView view, @NonNull MotionEvent motionEvent) { }
 
     @Override
-    public void onRequestDisallowInterceptTouchEvent (boolean disallowIntercept){}
+    public void onRequestDisallowInterceptTouchEvent (boolean disallowIntercept){ /* do nothing */ }
 }

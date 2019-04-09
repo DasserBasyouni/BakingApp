@@ -1,6 +1,5 @@
 package com.example.dasser.bakingapp.ui;
 
-import android.content.res.Configuration;
 import android.os.Bundle;
 
 import com.example.dasser.bakingapp.R;

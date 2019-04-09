@@ -12,6 +12,7 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import static com.example.dasser.bakingapp.Constants.DATABASE_NAME;
 
@@ -65,6 +66,7 @@ public class Recipe implements Parcelable {
         return ingredients;
     }
 
+    @NonNull
     public String getName() {
         return name;
     }
@@ -189,7 +191,7 @@ public class Recipe implements Parcelable {
         in.readList(this.steps, Steps.class.getClassLoader());
         this.ingredients = new ArrayList<Ingredient>();
         in.readList(this.ingredients, Ingredient.class.getClassLoader());
-        this.name = in.readString();
+        this.name = Objects.requireNonNull(in.readString());
         this.id = in.readInt();
     }
 
@@ -205,41 +207,4 @@ public class Recipe implements Parcelable {
         }
     };
 
-    /*public static class RecipeIngredientsAndStepsCombination {
-
-        private List<Ingredient> ingredients;
-        private List<Steps> steps;
-
-        public RecipeIngredientsAndStepsCombination(List<Ingredient> ingredients, List<Steps> steps) {
-            this.ingredients = ingredients;
-            this.steps = steps;
-        }
-
-        public List<Ingredient> getUrls() {
-            return ingredients;
-        }
-
-        public List<Steps> getSteps() {
-            return steps;
-        }
-    }*/
-
-    /*public static class RecipeNameAndServingCombination {
-
-        private List<String> name;
-        private List<Integer> serving;
-
-        public RecipeNameAndServingCombination(List<String> name, List<Integer> serving) {
-            this.name = name;
-            this.serving = serving;
-        }
-
-        public List<String> getDescriptions() {
-            return name;
-        }
-
-        public List<Integer> getUrls() {
-            return serving;
-        }
-    }*/
 }

@@ -29,7 +29,7 @@ public class Utils {
     }
 
     public static String getWidgetIngredientsFormat(Context context, int id) {
-        List<Recipe.Ingredient> ingredients = AppDatabaseUtils.getRecipesIngredients_MethodTwo(context, id);
+        List<Recipe.Ingredient> ingredients = AppDatabaseUtils.getRecipesIngredientsMethodTwo(context, id);
         StringBuilder widgetIngredients = new StringBuilder();
 
         for (int i=0 ; i<3 ; i++){

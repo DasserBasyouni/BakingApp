@@ -60,10 +60,10 @@ public class StepsRecyclerViewAdapter extends RecyclerView.Adapter<StepsRecycler
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
-        final TextView shortDescriptionTV;
-        final ImageView thumbnailIV;
-        final View view;
-        final CardView cardView;
+        private final TextView shortDescriptionTV;
+        private final ImageView thumbnailIV;
+        private final View view;
+        private final CardView cardView;
 
         ViewHolder(View view) {
             super(view);
@@ -128,7 +128,7 @@ public class StepsRecyclerViewAdapter extends RecyclerView.Adapter<StepsRecycler
             holder.thumbnailIV.setVisibility(View.VISIBLE);
             Picasso.get().load(thumbnailUrl).into(holder.thumbnailIV, new Callback() {
                 @Override
-                public void onSuccess() {}
+                public void onSuccess() { /* do nothing */ }
 
                 @Override
                 public void onError(Exception e) {

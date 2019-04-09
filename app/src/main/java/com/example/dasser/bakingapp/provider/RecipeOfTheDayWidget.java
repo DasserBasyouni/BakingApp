@@ -22,7 +22,7 @@ public class RecipeOfTheDayWidget extends AppWidgetProvider {
     //BroadcastReceiver broadcastReceiver;
     //IntentFilter dataIsReadyFilter;
 
-    void updateAppWidget(Context context, AppWidgetManager appWidgetManager,
+    private void updateAppWidget(Context context, AppWidgetManager appWidgetManager,
                          int appWidgetId) {
         this.context = context;
 

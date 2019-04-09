@@ -2,7 +2,6 @@ package com.example.dasser.bakingapp.ui;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -118,7 +117,7 @@ public class RecipeDetailFragment extends Fragment implements LoaderManager.Load
         if (getContext() != null)
             return new GetRecipesDetails(getContext(), args);
         else
-            throw new NullPointerException("onCreateLoader null context");
+            throw new IllegalArgumentException("onCreateLoader - null context");
     }
 
     @Override
@@ -133,12 +132,12 @@ public class RecipeDetailFragment extends Fragment implements LoaderManager.Load
     }
 
     @Override
-    public void onLoaderReset(@NonNull Loader loader) { }
+    public void onLoaderReset(@NonNull Loader loader) { /* do nothing */ }
 
 
     public static class GetRecipesDetails extends AsyncTaskLoader<Combinations.RecipeIngredientsAndStepsCombination> {
 
-        Bundle bundle;
+        private Bundle bundle;
 
         GetRecipesDetails(@NonNull Context context, Bundle bundle) {
             super(context);
@@ -158,12 +157,12 @@ public class RecipeDetailFragment extends Fragment implements LoaderManager.Load
             if (bundle != null)
                 id = bundle.getInt(BUNDLE_RECIPE_CLICKED_POSITION);
             else
-                throw new NullPointerException("Bundle is null");
+                throw new IllegalArgumentException("Bundle is equal to null");
 
             // TODO (3) getRecipesIngredients_MethodOne() is returning null, what is wrong with it?
             return new Combinations.RecipeIngredientsAndStepsCombination(
-            AppDatabaseUtils.getRecipesIngredients_MethodTwo(getContext(), id),
-            AppDatabaseUtils.getRecipeSteps_MethodTwo(getContext(), id));
+            AppDatabaseUtils.getRecipesIngredientsMethodTwo(getContext(), id),
+            AppDatabaseUtils.getRecipeStepsMethodTwo(getContext(), id));
         }
     }
 }

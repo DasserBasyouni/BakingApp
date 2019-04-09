@@ -2,15 +2,8 @@ package com.example.dasser.bakingapp.ui;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.loader.app.LoaderManager;
-import androidx.loader.content.AsyncTaskLoader;
-import androidx.loader.content.Loader;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,6 +15,15 @@ import com.example.dasser.bakingapp.adapter.RecipesRecyclerViewAdapter;
 import com.example.dasser.bakingapp.database.AppDatabaseUtils;
 import com.example.dasser.bakingapp.model.Combinations;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.loader.app.LoaderManager;
+import androidx.loader.content.AsyncTaskLoader;
+import androidx.loader.content.Loader;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -35,14 +37,22 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
 
     public MainFragment() { }
 
-
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_main, container, false);
         ButterKnife.bind(this, view);
 
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        boolean mTwoPane = getResources().getConfiguration().smallestScreenWidthDp >= 600;
+        boolean mLandscapeMode = getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE;
+
+        if (mTwoPane && mLandscapeMode)
+            recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 3));
+        else if (mTwoPane)
+            recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2));
+        else
+            recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+
         recyclerView.setVisibility(View.VISIBLE);
         recyclerView.setAdapter(null);
 
@@ -65,21 +75,17 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
         recyclerView.setAdapter(new RecipesRecyclerViewAdapter(getContext(),
                 (Combinations.RecipeNameAndServingCombination) data));
         recyclerView.addOnItemTouchListener(new RecipesRecyclerItemClickListener(getContext()
-                , new RecipesRecyclerItemClickListener.OnItemClickListener() {
-            @Override
-            public void onItemClick(int position) {
-                if (getFragmentManager() != null) {
-                    Bundle bundle = new Bundle();
-                    bundle.putInt(BUNDLE_RECIPE_CLICKED_POSITION, position);
+                , position -> {
+                    if (getFragmentManager() != null) {
+                        Bundle bundle = new Bundle();
+                        bundle.putInt(BUNDLE_RECIPE_CLICKED_POSITION, position);
+                        Intent intent = new Intent(getContext(), RecipeDetailActivity.class);
+                        intent.putExtras(bundle);
+                        startActivity(intent);
 
-                    Intent intent = new Intent(getContext(), DetailActivity.class);
-                    intent.putExtras(bundle);
-                    startActivity(intent);
-
-                } else
-                    throw new NullPointerException("beginTransaction() returns null");
-            }
-        }));
+                    } else
+                        throw new NullPointerException("beginTransaction() returns null");
+                }));
         progressBar.setVisibility(View.GONE);
         recyclerView.setVisibility(View.VISIBLE);
 

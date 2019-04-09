@@ -34,9 +34,7 @@ import static com.example.dasser.bakingapp.Constants.LOADER_ID_MAIN_ACTIVITY;
 
 public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<List<Recipe>>{
 
-    @BindView(R.id.progressBar_main_activity) ProgressBar progressBar;
-
-    private boolean mTwoPane;
+    @BindView(R.id.progressBar) ProgressBar progressBar;
 
 
     // TODO (4): when the phone rotates the progressBar visibility goes to Visible again, how to disable that?
@@ -48,13 +46,9 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         if (savedInstanceState == null) {
             ButterKnife.bind(this);
 
+            progressBar.setVisibility(View.VISIBLE);
             initialiseRetrofitConnection();
-            initialiseTwoPaneBoolean();
         }
-    }
-
-    private void initialiseTwoPaneBoolean() {
-        mTwoPane = findViewById(R.id.main_fragment) != null;
     }
 
     private void initialiseRetrofitConnection() {
@@ -84,16 +78,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         });
     }
 
-    private void launchUserInterfaceFragments() {
-        if (mTwoPane)
-            getSupportFragmentManager().beginTransaction()
-                    .add(R.id.fragment_container, new DetailFragment()).commit();
-        else
-            getSupportFragmentManager().beginTransaction()
-                    .add(R.id.fragment_container, new MainFragment()).commit();
-    }
-
-
     @NonNull
     @Override
     public Loader<List<Recipe>> onCreateLoader(int id, @Nullable Bundle args) {
@@ -109,7 +93,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     @Override
     public void onLoadFinished(@NonNull Loader<List<Recipe>> loader, List<Recipe> data) {
         progressBar.setVisibility(View.GONE);
-        launchUserInterfaceFragments();
+        getSupportFragmentManager().beginTransaction()
+                .add(R.id.fragment_container, new MainFragment()).commit();
     }
 
     @Override

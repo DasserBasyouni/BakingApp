@@ -6,7 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.dasser.bakingapp.R;
 
-public class DetailActivity extends AppCompatActivity{
+public class OneStepDetailActivity extends AppCompatActivity{
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -14,7 +14,7 @@ public class DetailActivity extends AppCompatActivity{
         setContentView(R.layout.activities_container);
 
         if (savedInstanceState == null) {
-            Fragment fragment = new DetailFragment();
+            Fragment fragment = new OneStepDetailFragment();
             fragment.setArguments(getIntent().getExtras());
 
             getSupportFragmentManager().beginTransaction()

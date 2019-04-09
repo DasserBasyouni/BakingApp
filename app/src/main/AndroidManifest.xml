@@ -23,15 +23,15 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".ui.DetailActivity"
+        <activity android:name=".ui.RecipeDetailActivity"
             android:launchMode="singleTop"
             android:label="@string/recipe_details"
             android:parentActivityName=".ui.MainActivity"
             tools:targetApi="jelly_bean" />
 
-        <activity android:name=".ui.StepsActivity"
+        <activity android:name=".ui.OneStepDetailActivity"
             android:launchMode="singleTop"
-            android:parentActivityName=".ui.DetailActivity"
+            android:parentActivityName=".ui.RecipeDetailActivity"
             tools:targetApi="jelly_bean" />
 
         <receiver android:name=".provider.RecipeOfTheDayWidget">

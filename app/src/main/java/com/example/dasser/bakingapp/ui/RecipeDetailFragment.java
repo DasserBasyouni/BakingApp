@@ -2,15 +2,7 @@ package com.example.dasser.bakingapp.ui;
 
 import android.content.Context;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.loader.app.LoaderManager;
-import androidx.loader.content.AsyncTaskLoader;
-import androidx.loader.content.Loader;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
+import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,13 +15,24 @@ import com.example.dasser.bakingapp.adapter.StepsRecyclerViewAdapter;
 import com.example.dasser.bakingapp.database.AppDatabaseUtils;
 import com.example.dasser.bakingapp.model.Combinations;
 
+import java.util.Objects;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.loader.app.LoaderManager;
+import androidx.loader.content.AsyncTaskLoader;
+import androidx.loader.content.Loader;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import static com.example.dasser.bakingapp.Constants.BUNDLE_RECIPE_CLICKED_POSITION;
 import static com.example.dasser.bakingapp.Constants.LOADER_ID_DETAIL_ACTIVITY;
 
-public class DetailFragment extends Fragment implements LoaderManager.LoaderCallbacks{
+public class RecipeDetailFragment extends Fragment implements LoaderManager.LoaderCallbacks{
 
     @BindView(R.id.recyclerView_ingredients) RecyclerView mIngredients_RV;
     @BindView(R.id.recyclerView_steps) RecyclerView mSteps_RV;
@@ -37,31 +40,45 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
     @BindView(R.id.textView_steps) TextView mSteps_TV;
     @BindView(R.id.progressBar_detail_fragment) ProgressBar mProgressBar;
 
-    private boolean mTwoPane;
+    private int previousPosition;
 
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt("previousPosition", ((StepsRecyclerViewAdapter) Objects
+                .requireNonNull(mSteps_RV.getAdapter())).previousPosition);
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable  Bundle outState) {
+        super.onActivityCreated(outState);
+        if (outState != null)
+            previousPosition = Objects.requireNonNull(outState)
+                    .getInt("previousPosition", previousPosition);
+    }
 
     @Override
     public void setArguments(@Nullable Bundle args) {
         super.setArguments(args);
     }
 
-    public DetailFragment() { }
-
-
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
         View view = inflater.inflate(R.layout.fragment_detail, container, false);
         ButterKnife.bind(this, view);
 
-        getLoaderManager().initLoader(LOADER_ID_DETAIL_ACTIVITY, getArguments(), this);
+        if (getArguments() != null)
+            getLoaderManager().initLoader(LOADER_ID_DETAIL_ACTIVITY, getArguments(), this);
+
         return view;
     }
 
     private void setupRecyclerViews(Object data) {
         Combinations.RecipeIngredientsAndStepsCombination recipeIngredientsAndStepsCombination =
                 (Combinations.RecipeIngredientsAndStepsCombination) data;
-        initialiseTwoPaneBoolean();
+        boolean mTwoPane = getResources().getConfiguration().smallestScreenWidthDp >= 600;
 
         int ingredientsNumberOfColumns;
         if (mTwoPane)
@@ -77,16 +94,23 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
 
         mSteps_RV.setLayoutManager(new LinearLayoutManager(getActivity()));
         mSteps_RV.setAdapter(new StepsRecyclerViewAdapter(
-                recipeIngredientsAndStepsCombination.getSteps()));
+                recipeIngredientsAndStepsCombination.getSteps(), mTwoPane,
+                Objects.requireNonNull(this.getActivity()).getSupportFragmentManager()));
         mSteps_RV.setHasFixedSize(true);
+
+        if (mTwoPane)
+            mSteps_RV.post(() -> {
+                RecyclerView.ViewHolder viewHolder = mSteps_RV.findViewHolderForAdapterPosition(previousPosition);
+                if (viewHolder != null)
+                    viewHolder.itemView.performClick();
+            });
     }
 
-    private void initialiseTwoPaneBoolean() {
-        if (getActivity() != null)
-            mTwoPane = getActivity().findViewById(R.id.main_fragment) == null;
-        else
-            throw new NullPointerException("getActivity() is null");
+    void setArgumentsThenStartLoader(Bundle arg) {
+        setArguments(arg);
+        getLoaderManager().initLoader(LOADER_ID_DETAIL_ACTIVITY, arg, this);
     }
+
 
     @NonNull
     @Override

@@ -11,7 +11,7 @@ import android.widget.RemoteViews;
 import com.example.dasser.bakingapp.R;
 import com.example.dasser.bakingapp.Utils;
 import com.example.dasser.bakingapp.database.AppDatabaseUtils;
-import com.example.dasser.bakingapp.ui.DetailActivity;
+import com.example.dasser.bakingapp.ui.RecipeDetailActivity;
 
 import static com.example.dasser.bakingapp.Constants.BUNDLE_RECIPE_CLICKED_POSITION;
 import static com.example.dasser.bakingapp.Utils.getWidgetIngredientsFormat;
@@ -44,7 +44,7 @@ public class RecipeOfTheDayWidget extends AppWidgetProvider {
         Bundle bundle = new Bundle();
         bundle.putInt(BUNDLE_RECIPE_CLICKED_POSITION, id);
 
-        Intent intent = new Intent(context, DetailActivity.class);
+        Intent intent = new Intent(context, RecipeDetailActivity.class);
         intent.putExtras(bundle);
         PendingIntent pendingIntent = PendingIntent.getActivity(context, 0
                 , intent, PendingIntent.FLAG_UPDATE_CURRENT);

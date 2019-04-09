@@ -6,9 +6,6 @@ import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
-import androidx.annotation.NonNull;
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.fragment.app.Fragment;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -37,9 +34,12 @@ import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.util.Util;
 
-import java.io.IOException;
 import java.util.List;
+import java.util.Objects;
 
+import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.fragment.app.Fragment;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import timber.log.Timber;
@@ -49,7 +49,7 @@ import static com.example.dasser.bakingapp.Constants.BUNDLE_STATE_RESUME_WINDOW;
 import static com.example.dasser.bakingapp.Constants.BUNDLE_STEPS_COMBINATION;
 import static com.example.dasser.bakingapp.Constants.BUNDLE_STEPS_NUMBER;
 
-public class StepFragment extends Fragment {
+public class OneStepDetailFragment extends Fragment {
 
     @BindView(R.id.playerView_video) PlayerView recipeVideo_PV;
     @BindView(R.id.textView_description) TextView description_TV;
@@ -66,13 +66,11 @@ public class StepFragment extends Fragment {
     private ExtractorMediaSource.EventListener eventListener;
     private List<String> urls, descriptions;
 
-    private boolean mExoPlayerFullscreen = false;
+    private boolean mPhoneSceneIsInLandscape = false;
     private int mResumeWindow;
     private long mResumePosition;
     private Dialog mFullScreenDialog;
-
-    public StepFragment() {
-    }
+    private Combinations.RecipeDescriptionsAndUrlsCombination combination;
 
 
     @Override
@@ -81,10 +79,10 @@ public class StepFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_step, container, false);
         ButterKnife.bind(this, view);
 
-        mExoPlayerFullscreen = getResources().getConfiguration().orientation
-                == Configuration.ORIENTATION_LANDSCAPE;
+        mPhoneSceneIsInLandscape = getResources().getConfiguration().orientation
+                == Configuration.ORIENTATION_LANDSCAPE
+                && getResources().getConfiguration().smallestScreenWidthDp < 600 ;
 
-        Combinations.RecipeDescriptionsAndUrlsCombination combination = null;
         Bundle bundle = getArguments();
         if (bundle != null) {
             mStepNumber = bundle.getInt(BUNDLE_STEPS_NUMBER);
@@ -101,16 +99,20 @@ public class StepFragment extends Fragment {
             }
         }
 
-        Activity activity = getActivity();
-        if (activity != null)
-            activity.setTitle(getString(R.string.recipe_step_number, mStepNumber + 1));
+        updateActivityTitle();
 
         if (combination != null) {
             initialiseViews(combination);
+            checkIfButtonsNeedDisable();
         }
 
-        checkIfButtonsNeedDisable();
         return view;
+    }
+
+    private void updateActivityTitle(){
+        Activity activity = getActivity();
+        if (activity != null)
+            activity.setTitle(getString(R.string.recipe_step_number, mStepNumber + 1));
     }
 
     private void initialiseViews(Combinations.RecipeDescriptionsAndUrlsCombination combination) {
@@ -132,27 +134,23 @@ public class StepFragment extends Fragment {
     }
 
     private void initialiseButtons() {
-        mNext_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (mStepNumber != urls.size() - 1) {
-                    mStepNumber++;
-                    checkIfButtonsNeedDisable();
-                    player.prepare(getMediaSourceAndInitialiseViews());
-                }
+        mNext_btn.setOnClickListener(v -> {
+            if (mStepNumber != urls.size() - 1) {
+                mStepNumber++;
+                checkIfButtonsNeedDisable();
+                updateActivityTitle();
+                player.prepare(getMediaSourceAndInitialiseViews());
             }
         });
 
-        mPrevious_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-               if (mStepNumber != 0) {
-                    mStepNumber--;
-                    checkIfButtonsNeedDisable();
-                    player.prepare(getMediaSourceAndInitialiseViews());
-                }
-
+        mPrevious_btn.setOnClickListener(v -> {
+            if (mStepNumber != 0) {
+                mStepNumber--;
+                checkIfButtonsNeedDisable();
+                updateActivityTitle();
+                player.prepare(getMediaSourceAndInitialiseViews());
             }
+
         });
     }
 
@@ -182,12 +180,12 @@ public class StepFragment extends Fragment {
             public void onPlayerStateChanged(boolean playWhenReady, int playbackState) {
                 setDescriptionText();
                 if (playbackState != Player.STATE_IDLE) {
-                    if (!mExoPlayerFullscreen)
+                    if (!mPhoneSceneIsInLandscape)
                         restorePlayerHeight();
                     displayVideoAndDescriptionViewsAndHideLoading();
                 } else {
                     recipeVideo_PV.setVisibility(View.INVISIBLE);
-                    if (!mExoPlayerFullscreen)
+                    if (!mPhoneSceneIsInLandscape)
                         minimizePlayerHeight();
                 }
             }
@@ -202,15 +200,11 @@ public class StepFragment extends Fragment {
 
         DefaultBandwidthMeter bandwidthMeterA = new DefaultBandwidthMeter();
         dataSourceFactory = new DefaultDataSourceFactory(
-                getContext(), Util.getUserAgent(getContext(), "Backing App"), bandwidthMeterA);
+                Objects.requireNonNull(getContext()), Util.getUserAgent(getContext(),
+                 "Backing App"), bandwidthMeterA);
 
-        eventListener = new ExtractorMediaSource.EventListener() {
-
-            @Override
-            public void onLoadError(IOException error) {
+        eventListener = error ->
                 Timber.e("initialisePlayer Error: %s", error.getLocalizedMessage());
-            }
-        };
         player.prepare(getMediaSourceAndInitialiseViews());
     }
 
@@ -273,22 +267,24 @@ public class StepFragment extends Fragment {
 
         initFullscreenDialog();
 
-        if (!urls.get(mStepNumber).isEmpty()) {
-            int uiOptions;
-            if (mExoPlayerFullscreen) {
-                uiOptions = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION;
-                ((ViewGroup) recipeVideo_PV.getParent()).removeView(recipeVideo_PV);
-                mFullScreenDialog.addContentView(recipeVideo_PV, new ViewGroup.LayoutParams(
-                        ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-                mFullScreenDialog.show();
-            } else {
-                uiOptions = View.SYSTEM_UI_FLAG_VISIBLE;
-                ((ViewGroup) recipeVideo_PV.getParent()).removeView(recipeVideo_PV);
-                ((ConstraintLayout) getActivity().findViewById(R.id.constraint_step)).addView(recipeVideo_PV);
-                mFullScreenDialog.dismiss();
+        if (combination != null)
+            if (!urls.get(mStepNumber).isEmpty()) {
+                int uiOptions;
+                if (mPhoneSceneIsInLandscape) {
+                    uiOptions = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION;
+                    ((ViewGroup) recipeVideo_PV.getParent()).removeView(recipeVideo_PV);
+                    mFullScreenDialog.addContentView(recipeVideo_PV, new ViewGroup.LayoutParams(
+                            ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+                    mFullScreenDialog.show();
+                } else {
+                    uiOptions = View.SYSTEM_UI_FLAG_VISIBLE;
+                    ((ViewGroup) recipeVideo_PV.getParent()).removeView(recipeVideo_PV);
+                    ((ConstraintLayout) Objects.requireNonNull(getActivity())
+                            .findViewById(R.id.constraint_step)).addView(recipeVideo_PV);
+                    mFullScreenDialog.dismiss();
+                }
+                Objects.requireNonNull(getActivity()).getWindow().getDecorView().setSystemUiVisibility(uiOptions);
             }
-            getActivity().getWindow().getDecorView().setSystemUiVisibility(uiOptions);
-        }
     }
 
     @Override
@@ -302,9 +298,10 @@ public class StepFragment extends Fragment {
     }
 
     private void initFullscreenDialog() {
-        mFullScreenDialog = new Dialog(getContext(), android.R.style.Theme_Black_NoTitleBar_Fullscreen) {
+        mFullScreenDialog = new Dialog(Objects.requireNonNull(getContext()),
+                android.R.style.Theme_Black_NoTitleBar_Fullscreen) {
             public void onBackPressed() {
-                /*if (mExoPlayerFullscreen)
+                /*if (mPhoneSceneIsInLandscape)
                     closeFullscreenDialog();*/
                 super.onBackPressed();
             }

@@ -1,5 +1,7 @@
 # Baking App
 
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/093b0280f1cc487c870cb0a9a4e9b68f)](https://app.codacy.com/app/DasserBasyouni/BakingApp?utm_source=github.com&utm_medium=referral&utm_content=DasserBasyouni/BakingApp&utm_campaign=Badge_Grade_Dashboard)
+
 App that will allow Udacity’s resident baker-in-chief, Miriam, to share her recipes with the world. You will create an app that will allow a user to select a recipe.
 
 [This JSON file](https://d17h27t6h515a5.cloudfront.net/topher/2017/May/59121517_baking/baking.json) contains the recipes' instructions, ingredients, videos and images that are in this project. 

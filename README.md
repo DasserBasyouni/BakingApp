@@ -19,6 +19,8 @@ App that will allow Udacity’s resident baker-in-chief, Miriam, to share her re
 <p align="center"> <img src="/pictures/screenshot6.png" width="300"> <img src="/pictures/screenshot8.png" width="300"> </p>
 <p align="center"> <img src="/pictures/screenshot5.png" width="400"> <img src="/pictures/screenshot7.png" width="400"> </p>
 
+### Widget
+<p align="center"> <img src="/pictures/screenshot9.png" width="300"> </p>
 
 ## What I have learnt from?
 -  Migrating to AndroidX
